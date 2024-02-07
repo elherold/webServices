@@ -4,9 +4,6 @@ import json
 import datetime
 import requests
 
-# Responsible to manage channels 
-# involves creating, updating, and retrieving channel information using restful APIs
-
 db = SQLAlchemy()
 
 # Define the User data-model.
