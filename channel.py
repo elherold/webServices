@@ -82,8 +82,21 @@ def send_message():
     if not 'timestamp' in message:
         return "No timestamp", 400
     # add message to messages
+    """
     messages = read_messages()
     messages.append({'content':message['content'], 'sender':message['sender'], 'timestamp':message['timestamp']})
+    save_messages(messages)
+    """
+    # Generate a response to the message
+    response_content = generate_response(message['content'])
+
+    # Save the original message
+    messages = read_messages()
+    messages.append({'content': message['content'], 'sender': message['sender'], 'timestamp': message['timestamp']})
+    
+    # Optionally, save the generated response as a new message from the channel itself
+    messages.append({'content': response_content, 'sender': CHANNEL_NAME, 'timestamp': message['timestamp']})
+    
     save_messages(messages)
     return "OK", 200
 
@@ -98,12 +111,17 @@ def read_messages():
     except json.decoder.JSONDecodeError:
         messages = []
     f.close()
-    return messages
+    return messages 
 
 def save_messages(messages):
     global CHANNEL_FILE
     with open(CHANNEL_FILE, 'w') as f:
         json.dump(messages, f)
+
+def generate_response(input_message):
+    # This is where you could integrate an AI model or any logic to generate responses.
+    # For demonstration, we'll just echo back the message with a prefix.
+    return "Response: " + input_message
 
 # Start development web server
 if __name__ == '__main__':
