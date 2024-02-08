@@ -119,8 +119,6 @@ def save_messages(messages):
         json.dump(messages, f)
 
 def generate_response(input_message):
-    # This is where you could integrate an AI model or any logic to generate responses.
-    # For demonstration, we'll just echo back the message with a prefix.
     return "Response: " + input_message
 
 # Start development web server
