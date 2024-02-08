@@ -1,9 +1,14 @@
 ## channel.py - a simple message channel
 ##
 
-from flask import Flask, request, render_template, jsonify
+from flask import Flask, request, render_template, jsonify, session
 import json
 import requests
+import random
+from chatbot_response import*
+from flask_session import Session
+from flask_cors import CORS
+from redis import Redis
 
 # Class-based application configuration
 class ConfigClass(object):
@@ -11,11 +16,18 @@ class ConfigClass(object):
 
     # Flask settings
     SECRET_KEY = 'This is an INSECURE secret!! DO NOT use this in production!!'
+    SESSION_TYPE = 'filesystem'
+    SESSION_PERMANENT = False 
+    SESSION_USE_SIGNER = True
+    
 
 # Create Flask app
 app = Flask(__name__)
 app.config.from_object(__name__ + '.ConfigClass')  # configuration
 app.app_context().push()  # create an app context before initializing db
+
+
+
 
 HUB_URL = 'http://localhost:5555'
 HUB_AUTHKEY = '1234567890'
@@ -67,6 +79,8 @@ def home_page():
 # POST: Send a message
 @app.route('/', methods=['POST'])
 def send_message():
+    if 'state' not in session:
+        print("no state in session 1")
     # fetch channels from server
     # check authorization header
     if not check_authorization(request):
@@ -81,24 +95,52 @@ def send_message():
         return "No sender", 400
     if not 'timestamp' in message:
         return "No timestamp", 400
-    # add message to messages
-    """
-    messages = read_messages()
-    messages.append({'content':message['content'], 'sender':message['sender'], 'timestamp':message['timestamp']})
-    save_messages(messages)
-    """
-    # Generate a response to the message
-    response_content = generate_response(message['content'])
 
-    # Save the original message
+    content = message['content']
+
+    if '-' in content:
+        contents = content.split('-')
+        bottom_text = contents[0]
+        top_text = contents[1]
+        templates = get_meme_templates()
+        selected_template = random.choice(templates)
+        response = create_meme(selected_template['id'], bottom_text , top_text)
+    else:
+        response = generate_response(content)
+
+        # Save the original message
     messages = read_messages()
     messages.append({'content': message['content'], 'sender': message['sender'], 'timestamp': message['timestamp']})
     
-    # Optionally, save the generated response as a new message from the channel itself
-    messages.append({'content': response_content, 'sender': CHANNEL_NAME, 'timestamp': message['timestamp']})
+    # save the generated response as a new message from the channel itself
+    messages.append({'content': response, 'sender': CHANNEL_NAME, 'timestamp': message['timestamp']})
     
     save_messages(messages)
     return "OK", 200
+
+"""
+    # Check if we're starting a new meme creation process
+    if 'state' not in session:
+        # Save the top text and update the state
+        session['top_text'] = content
+        session['state'] = 'AWAITING_BOTTOM_TEXT'
+        print("No state in session2")
+        print("Entered AWAITING_TOP_TEXT state!")
+        response = "Please enter the bottom text for your meme next!"
+
+    elif session['state'] == 'AWAITING_BOTTOM_TEXT':
+        # We have the top text saved now save the bottom text
+        bottom_text = content
+        templates = get_meme_templates()
+        selected_template = random.choice(templates)
+        print("Entered AWAITING_BOTTOM_TEXT state!")
+        # Generate the meme using the saved top text, bottom text, and selected template
+        response = create_meme(selected_template, session['top_text'], bottom_text)
+        
+        # Clear the session for next time
+        session.pop('state', None)
+        session.pop('top_text', None)
+"""
 
 def read_messages():
     global CHANNEL_FILE
@@ -119,7 +161,11 @@ def save_messages(messages):
         json.dump(messages, f)
 
 def generate_response(input_message):
-    return "Response: " + input_message
+    try: 
+        response = get_response(input_message)
+        return response
+    except Exception as e:
+        return "Sorry, I cannot process your input right now. "
 
 # Start development web server
 if __name__ == '__main__':
