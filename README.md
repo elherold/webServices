@@ -29,5 +29,8 @@ Based on key-words the most likely response is calculated.
 Sometimes the response is a randomly selected statement out of a group of matching responses from long_responses.py
 ### create_memes.py: 
 Includes the function for extracting meme-templates via imgflip API and the function for putting the provided statements on the template. 
+### long_responses.py: 
+Includes lists of equivalent responses, where one is randomly picked and returned. 
+
 
 
