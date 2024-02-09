@@ -1,14 +1,12 @@
 ## channel.py - a simple message channel
 ##
 
-from flask import Flask, request, render_template, jsonify, session
+from flask import Flask, request, render_template, jsonify
 import json
 import requests
 import random
 from chatbot_response import*
-from flask_session import Session
-from flask_cors import CORS
-from redis import Redis
+from create_memes import get_meme_templates, create_meme
 
 # Class-based application configuration
 class ConfigClass(object):
@@ -79,8 +77,6 @@ def home_page():
 # POST: Send a message
 @app.route('/', methods=['POST'])
 def send_message():
-    if 'state' not in session:
-        print("no state in session 1")
     # fetch channels from server
     # check authorization header
     if not check_authorization(request):
@@ -98,14 +94,19 @@ def send_message():
 
     content = message['content']
 
+# Check if content includes a '-' to determine if it's intended for meme generation.
     if '-' in content:
+        # Split content at '-' to get separate texts for the bottom and top of the meme.
         contents = content.split('-')
         bottom_text = contents[0]
         top_text = contents[1]
+        # Get a list of meme templates and select one randomly.
         templates = get_meme_templates()
         selected_template = random.choice(templates)
-        response = create_meme(selected_template['id'], bottom_text , top_text)
+        # Create a meme with the selected template and specified texts.
+        response = create_meme(selected_template['id'], bottom_text, top_text)
     else:
+        # If '-' is not in content, generate a response without meme creation.
         response = generate_response(content)
 
         # Save the original message
@@ -117,30 +118,6 @@ def send_message():
     
     save_messages(messages)
     return "OK", 200
-
-"""
-    # Check if we're starting a new meme creation process
-    if 'state' not in session:
-        # Save the top text and update the state
-        session['top_text'] = content
-        session['state'] = 'AWAITING_BOTTOM_TEXT'
-        print("No state in session2")
-        print("Entered AWAITING_TOP_TEXT state!")
-        response = "Please enter the bottom text for your meme next!"
-
-    elif session['state'] == 'AWAITING_BOTTOM_TEXT':
-        # We have the top text saved now save the bottom text
-        bottom_text = content
-        templates = get_meme_templates()
-        selected_template = random.choice(templates)
-        print("Entered AWAITING_BOTTOM_TEXT state!")
-        # Generate the meme using the saved top text, bottom text, and selected template
-        response = create_meme(selected_template, session['top_text'], bottom_text)
-        
-        # Clear the session for next time
-        session.pop('state', None)
-        session.pop('top_text', None)
-"""
 
 def read_messages():
     global CHANNEL_FILE
