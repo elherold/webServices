@@ -2,7 +2,7 @@
 Project 3 AI in the web
 
 
-## Implement some Chatbot fpr your channel:
+## Implement some Chatbot for your channel:
 We've implemented a "MemeBot". Users are prompted to provide two pieces of text, separated by a hyphen ("-"), which the bot then utilizes to generate memes. 
 These text snippets serve as the top and bottom captions of a meme, matched with a randomly selected template accessed through the imgflip API. 
 ### Meme Generation
@@ -13,3 +13,21 @@ However, recognizing the complexity of managing stateful interactions in a distr
 ### Handling other user requests
 Aside from meme generation, the MemeBot is equipped with basic logic to process and respond to user queries that do not involve meme creation. 
 It employs keyword matching to identify the nature of the user's request, generating responses from a set of pre-written sentences.
+
+## Fancy User-Interface: 
+...
+
+## Overview of our added/ edited files: 
+### channel.py: 
+We edited the send_message function. After authentication check, there is a 
+differentiation between meme request and other user requests via "-". 
+Either generates a meme based on provided text statements with use of functions from create_memes.py,
+or generates a text-response based on functions from chatbot_response.py
+### chatbot_response.py:
+New file that serves to select an adequate response out of the pre-written responses based on the user-input. 
+Based on key-words the most likely response is calculated. 
+Sometimes the response is a randomly selected statement out of a group of matching responses from long_responses.py
+### create_memes.py: 
+Includes the function for extracting meme-templates via imgflip API and the function for putting the provided statements on the template. 
+
+
