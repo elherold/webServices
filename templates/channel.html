@@ -1,87 +1,130 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
     <title>Channel {{ channel.name }}</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
     <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-            color: #333;
-        }
-        a {
-            color: #007bff;
-            text-decoration: none;
-        }
-        a:hover {
-            text-decoration: underline;
-        }
-        h1 {
-            color: #444;
-            background-color: #ddd;
-            padding: 10px;
-            border-bottom: 1px solid #bbb;
-        }
-        h2 {
-            color: #555;
-        }
-        p {
-            margin: 10px 0;
-        }
-        form {
-            background-color: #fff;
-            padding: 20px;
-            margin-top: 20px;
-        }
-        input[type=text], input[type=submit] {
-            padding: 10px;
-            margin: 5px 0;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            display: block;
-            width: 95%;
-        }
-        input[type=submit] {
-            background-color: #007bff;
-            color: white;
-            cursor: pointer;
-        }
-        input[type=submit]:hover {
-            background-color: #0056b3;
-        }
+      .form {
+        display: flex; /* Use flexbox for centering */
+        justify-content: center; /* Center the child horizontally */
+        align-items: center; /* Center the child vertically */
+      }
+      form {
+        width: 50%;
+      }
+      input {
+        width: 50%;
+      }
+      body {
+        font-family: "Arial", sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+        color: #333;
+      }
+      a {
+        color: #007bff;
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+      h1 {
+        color: #444;
+        background-color: #ddd;
+        padding: 10px;
+        border-bottom: 1px solid #bbb;
+      }
+      h2 {
+        color: #555;
+      }
+      p {
+        margin: 10px 0;
+      }
+      form {
+        background-color: #fff;
+        padding: 20px;
+        margin-top: 20px;
+      }
+      input[type="text"],
+      input[type="submit"] {
+        padding: 10px;
+        margin: 5px 0;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        display: block;
+        width: 95%;
+      }
+      input[type="submit"] {
+        background-color: #007bff;
+        color: white;
+        cursor: pointer;
+      }
+      input[type="submit"]:hover {
+        background-color: #0056b3;
+      }
     </style>
-</head>
-<body>
-<p>The distributed messenger. <a href="{{ url_for('home_page') }}">List of channels.</a></p>
+  </head>
 
-{% if channel %}
-    <h1>Channel {{ channel.name }}</h1>
-
-    {% for message in messages %}
-        <div style="background-color: #fff; padding: 10px; margin-bottom: 10px; border-radius: 5px;">
-            <h2>{{ message.sender }}</h2>
-            <p>{{ message.content }}</p>
-            {% if 'http' in message.content %}
-                    <img src="{{ message.content }}" alt="Message Image">
-                {% endif %}
-                <p style="font-size: 60%;">{{ message.timestamp }}</p>
-            <p style="font-size: 60%;">{{ message.timestamp }}</p>
-        </div>
-    {% endfor %}
-{% else %}
+  <body>
+    {% if channel %}
+    <h1>MemeForge 3000</h1>
+    <p>
+      The distributed messenger.
+      <a href="{{ url_for('home_page') }}">List of channels.</a>
+    </p>
+    <div class="form">
+      <form action="post" method="post">
+        <input
+          type="hidden"
+          name="channel"
+          value="{{ channel.endpoint | urlencode }}"
+        />
+        <label for="sender">Your name:</label>
+        <input type="text" name="sender" id="sender" /> <br />
+        <label for="content">Meme Prompt with format prompt1 - prompt2:</label>
+        <input type="text" name="content" id="content" /> <br />
+        <input type="submit" value="Post" />
+      </form>
+    </div>
+    {% for message in messages|reverse() %}
+    <div
+      style="
+        background-color: #fff;
+        padding: 10px;
+        margin-bottom: 10px;
+        border-radius: 5px;
+        text-align: center;
+      "
+    >
+      <h2>{{ message.sender }}</h2>
+      <p>{{ message.content }}</p>
+      {% if 'http' in message.content %}
+      <img src="{{ message.content }}" alt="Message Image" />
+      {% endif %}
+      <p style="font-size: 60%">{{ message.timestamp }}</p>
+      <p style="font-size: 60%">{{ message.timestamp }}</p>
+    </div>
+    {% endfor %} {% else %}
     <h1>Channel not found</h1>
-{% endif %}
+    {% endif %}
 
-<form action="post" method="post">
-    <input type="hidden" name="channel" value="{{ channel.endpoint | urlencode }}">
-    <label for="sender">Sender:</label>
-    <input type="text" name="sender" id="sender"> <br>
-    <label for="content">Message:</label>
-    <input type="text" name="content" id="content"> <br>
-    <input type="submit" value="Post">
-</form>
-
-</body>
+    <!-- Footer -->
+    <div class="container" justify-content="center" align-items="center">
+      <footer class="blog-footer">
+        <p>
+          <a href="#" class="nav-link active">Back to top</a>
+        </p>
+      </footer>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  </body>
 </html>
