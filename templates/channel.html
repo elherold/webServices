@@ -4,12 +4,18 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>           Channel {{ channel.name }}           </title>
+    <!-- Set the title of the page using channel name -->
+    <title>Channel {{ channel.name }}</title>
+
+    <!-- Include Bootstrap CSS -->
     <link
       rel="stylesheet"
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
     />
+
+    <!-- Internal Styles -->
     <style>
+      /* Overall styling for the body */
       body {
         font-family: "Arial", sans-serif;
         margin: 0;
@@ -19,17 +25,23 @@
         background-attachment: fixed; /* This makes the background fixed */
         color: #333; /* Text color */
       }
+
+      /* Center the form */
       .form {
         display: flex; /* Use flexbox for centering */
         justify-content: center; /* Center the child horizontally */
         align-items: center; /* Center the child vertically */
       }
+
+      /* Form styling */
       form {
         width: 50%;
       }
       input {
         width: 50%;
       }
+
+      /* Additional body styling */
       body {
         font-family: "Arial", sans-serif;
         margin: 0;
@@ -39,6 +51,8 @@
         font-weight: bold; /* Make the font bold */
         font-size: 1.2em; /* Increase the font size */
       }
+
+      /* Styling for hyperlinks */
       a {
         color: #007bff;
         text-decoration: none;
@@ -46,6 +60,8 @@
       a:hover {
         text-decoration: underline;
       }
+
+      /* Heading styles */
       h1 {
         color: #000000;
         background-color: #686565;
@@ -55,9 +71,13 @@
       h2 {
         color: #000000;
       }
+
+      /* Paragraph styling */
       p {
         margin: 10px 0;
       }
+
+      /* Styling for the form */
       form {
         background-color: #fff;
         padding: 20px;
@@ -84,26 +104,38 @@
   </head>
 
   <body>
+    <!-- Check if channel exists -->
     {% if channel %}
+    <!-- Header section -->
     <h1>MemeForge 3000</h1>
     <p>
       The distributed messenger.
+      <!-- Link to the home page -->
       <a href="{{ url_for('home_page') }}">List of channels.</a>
     </p>
+
+    <!-- Form section -->
     <div class="form">
       <form action="post" method="post">
+        <!-- Hidden input to store channel endpoint -->
         <input
           type="hidden"
           name="channel"
           value="{{ channel.endpoint | urlencode }}"
         />
-        <label for="sender"> <b>Your name:</b></label>
-        <input type="text" name="sender" id="sender" /> <br />
-        <label for="content"><b>Meme Prompt with format "</b><i>prompt1 <b> - </b> prompt2</i><b>":</b><br> For example: <i>Zeig mir was Lustiges - Okay Bro</i></label>
-        <input type="text" name="content" id="content" /> <br />
-        <input type="submit" value="Generate"/>  
+        <label for="sender"><b>Your name:</b></label>
+        <input type="text" name="sender" id="sender" /><br />
+        <label for="content"
+          ><b>Meme Prompt with format "</b
+          ><i>prompt1 <b>-</b> prompt2</i><b>":</b><br />
+          For example: <i>Zeig mir was Lustiges - Okay Bro</i></label
+        >
+        <input type="text" name="content" id="content" /><br />
+        <input type="submit" value="Generate" />
       </form>
     </div>
+
+    <!-- Display messages -->
     {% for message in messages|reverse() %}
     <div
       style="
@@ -116,12 +148,18 @@
     >
       <h2>{{ message.sender }}</h2>
       <p>{{ message.content }}</p>
+      <!-- Check if content contains a link -->
       {% if 'http' in message.content %}
+      <!-- Display image if content is a link -->
       <img src="{{ message.content }}" alt="Message Image" />
       {% endif %}
+      <!-- Display timestamp -->
       <p style="font-size: 60%">{{ message.timestamp }}</p>
     </div>
-    {% endfor %} {% else %}
+    {% endfor %}
+
+    <!-- If channel does not exist -->
+    {% else %}
     <h1>Channel not found</h1>
     {% endif %}
 
@@ -133,6 +171,8 @@
         </p>
       </footer>
     </div>
+
+    <!-- Include jQuery and Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
