@@ -4,12 +4,21 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Channel {{ channel.name }}</title>
+    <title>           Channel {{ channel.name }}           </title>
     <link
       rel="stylesheet"
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
     />
     <style>
+      body {
+        font-family: "Arial", sans-serif;
+        margin: 0;
+        padding: 0;
+        background-image: url('./static/anvil.jpg');
+        background-size: cover;
+        background-attachment: fixed; /* This makes the background fixed */
+        color: #333; /* Text color */
+      }
       .form {
         display: flex; /* Use flexbox for centering */
         justify-content: center; /* Center the child horizontally */
@@ -25,8 +34,10 @@
         font-family: "Arial", sans-serif;
         margin: 0;
         padding: 0;
-        background-color: #f4f4f4;
-        color: #333;
+        background-color: #520000;
+        color: #030303;
+        font-weight: bold; /* Make the font bold */
+        font-size: 1.2em; /* Increase the font size */
       }
       a {
         color: #007bff;
@@ -36,13 +47,13 @@
         text-decoration: underline;
       }
       h1 {
-        color: #444;
-        background-color: #ddd;
+        color: #000000;
+        background-color: #686565;
         padding: 10px;
         border-bottom: 1px solid #bbb;
       }
       h2 {
-        color: #555;
+        color: #000000;
       }
       p {
         margin: 10px 0;
@@ -62,12 +73,12 @@
         width: 95%;
       }
       input[type="submit"] {
-        background-color: #007bff;
+        background-color: #6e0b07;
         color: white;
         cursor: pointer;
       }
       input[type="submit"]:hover {
-        background-color: #0056b3;
+        background-color: #ff0800;
       }
     </style>
   </head>
@@ -86,17 +97,17 @@
           name="channel"
           value="{{ channel.endpoint | urlencode }}"
         />
-        <label for="sender">Your name:</label>
+        <label for="sender"> <b>Your name:</b></label>
         <input type="text" name="sender" id="sender" /> <br />
-        <label for="content">Meme Prompt with format prompt1 - prompt2:</label>
+        <label for="content"><b>Meme Prompt with format "</b><i>prompt1 <b> - </b> prompt2</i><b>":</b><br> For example: <i>Zeig mir was Lustiges - Okay Bro</i></label>
         <input type="text" name="content" id="content" /> <br />
-        <input type="submit" value="Post" />
+        <input type="submit" value="Generate"/>  
       </form>
     </div>
     {% for message in messages|reverse() %}
     <div
       style="
-        background-color: #fff;
+        background-color: #ffffff38;
         padding: 10px;
         margin-bottom: 10px;
         border-radius: 5px;
@@ -108,7 +119,6 @@
       {% if 'http' in message.content %}
       <img src="{{ message.content }}" alt="Message Image" />
       {% endif %}
-      <p style="font-size: 60%">{{ message.timestamp }}</p>
       <p style="font-size: 60%">{{ message.timestamp }}</p>
     </div>
     {% endfor %} {% else %}
