@@ -1,6 +1,14 @@
 import requests
 
+
 def get_meme_templates():
+    """
+    Retrieves a list of available meme templates from the Imgflip API.
+
+    Returns:
+        list: A list of meme templates if successful.
+        str: Error message if unsuccessful.
+    """
     url = "https://api.imgflip.com/get_memes"
     response = requests.get(url)
     if response.status_code == 200:
@@ -14,6 +22,18 @@ def get_meme_templates():
 
 
 def create_meme(template_id, text_top, text_bottom):
+    """
+    Creates a meme using the specified template ID and text captions.
+
+    Args:
+        template_id (str): The ID of the meme template.
+        text_top (str): The text caption for the top of the meme.
+        text_bottom (str): The text caption for the bottom of the meme.
+
+    Returns:
+        str: URL of the generated meme if successful.
+        str: Error message if unsuccessful.
+    """
     url = "https://api.imgflip.com/caption_image"
     params = {
         'username': 'elherold',
@@ -31,14 +51,3 @@ def create_meme(template_id, text_top, text_bottom):
         return response["data"]["url"]
     else:
         return "Failed to create meme."
-
-"""
-# Example usage
-meme_url = create_meme('112126428', 'Mensa Fries', 'Me')
-print(meme_url)
-
-# Example usage
-templates = get_meme_templates()
-for template in templates[:5]:  # Print the first 5 templates
-    print(template["name"], template["url"])
-"""

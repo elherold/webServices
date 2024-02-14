@@ -33,15 +33,6 @@ def message_probability(user_message, recognised_words, single_response=False, r
         return int(percentage*100) # simply converts percentage to an integer
     else: 
         return 0
-"""
-def handle_meme_request(choice, text_top, text_bottom):
-    templates = get_meme_templates()
-    try: 
-        selected_template = templates[int(choice)-1]
-        return create_meme(selected_template['id'], text_top, text_bottom)
-    except (ValueError, IndexError):
-        return "Invalid choice or error creating meme."
-""" 
         
 def check_all_messages(message):
     """
